@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:myapp/modals/weatherModel.dart';
 import 'package:myapp/services/weatherService.dart';
 
@@ -25,6 +26,31 @@ class _WeatherPageState extends State<WeatherPage> {
     }
   }
 
+String getWeatherAnimation(String? mainCondition){
+  if(mainCondition == null )return 'assets/sunny.json';
+  switch (mainCondition.toLowerCase()) {
+    case 'clouds':
+    case 'mist':
+    case 'haze':
+    case 'smoke':
+    case 'dust':
+    case 'fog':
+    return 'assets/cloud.json';
+    case 'rain':
+    case 'drizzle':
+    case 'shower rain':
+    return 'assets/rain.json';
+    case 'thunderstorm':
+    return 'assets/thunder.json';
+    case 'clear':
+    return 'assets/sunny.json';
+    default:
+    return 'assets/sunny.json';
+      
+
+  }
+}
+
   @override
   void initState() {
     super.initState();
@@ -38,8 +64,10 @@ class _WeatherPageState extends State<WeatherPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(_weather?.cityName ?? "Loading city "),
+            Text(_weather?.cityName ?? "Loading city"),
+            Lottie.asset(getWeatherAnimation(_weather?.mainCondition)),
             Text("${_weather?.temperature.round()}°C"),
+            Text(_weather?.mainCondition ?? "Loading weather"),
             ],
         ),
       ),
