@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:geolocator/geolocator.dart';
 import 'package:myapp/modals/weatherModel.dart';
 import 'package:http/http.dart' as http;
 import 'package:geocoding/geocoding.dart';
@@ -18,7 +19,15 @@ Future<Weather> getWeather(String cityName)async{
 }
 
 Future <String> getCurrentCity()async{
-  List <Placemark> placemarks = await placemarkFromCoordinates(6.9271, 79.8612);
+  LocationPermission permission = await Geolocator.checkPermission();
+  if(permission == LocationPermission.denied){
+    permission = await Geolocator.requestPermission();
+  }
+  Position position = await Geolocator.getCurrentPosition(
+    desiredAccuracy: LocationAccuracy.high
+  );
+
+  List <Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
   String? city = placemarks[0].locality;
 
   return city ?? "";
